@@ -25,15 +25,16 @@ pub struct EncodeSoundArgs {
     #[arg(
         short,
         long,
-        default_value = "30",
-        help = "Words per minute",
+        default_value = "40",
+        help = "Words per minute (20-50)",
+        value_parser = clap::value_parser!(u32).range(20..=50)
     )]
     pub wpm: u32,
 
     #[arg(
         short,
         long,
-        default_value = "50",
+        default_value = "80",
         help = "Volume % (0-100)",
     )]
     pub volume: u32,
@@ -41,7 +42,7 @@ pub struct EncodeSoundArgs {
     #[arg(
         short,
         long,
-        default_value = "800",
+        default_value = "1200",
         help = "Signal frequency",
     )]
     pub frequency: u32,
@@ -49,7 +50,7 @@ pub struct EncodeSoundArgs {
     #[arg(
         short,
         long,
-        default_value = "48000",
+        default_value = "44100",
         help = "Sample rate",
     )]
     pub sample_rate: u32,
@@ -58,7 +59,7 @@ pub struct EncodeSoundArgs {
         short,
         long,
         default_value = "./out.wav",
-        help = "Write to a file instead of stdout"
+        help = "File to save audio"
     )]
     pub output: String,
 

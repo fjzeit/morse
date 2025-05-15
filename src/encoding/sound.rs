@@ -1,3 +1,4 @@
+use std::f32::consts::PI;
 use std::fs::File;
 use std::mem;
 use super::morse;
@@ -16,7 +17,7 @@ pub fn to_sound(
     let single_sample_size = mem::size_of::<f32>() as u16;
     let head = wav_io::new_header(sample_rate, single_sample_size * 8, true, true);
     let mut samples: Vec<f32> = vec![];
-    let mut phase : f32 = 0.0;
+    let mut phase: f32 = 0.0;
 
     let amplitude: f32 = amplitude as f32 / 100f32;
 
@@ -29,7 +30,6 @@ pub fn to_sound(
             _ => panic!("Unexpected character: {}", c),
         };
 
-        for _ in 0..n {
             write_sound(
                 tone,
                 &mut samples,
@@ -37,9 +37,10 @@ pub fn to_sound(
                 sample_rate as usize,
                 amplitude,
                 frequency as f32,
-                &mut phase
+                &mut phase,
+                n * samples_per_unit,
             );
-        }
+
         write_sound(
             false,
             &mut samples,
@@ -47,7 +48,8 @@ pub fn to_sound(
             sample_rate as usize,
             amplitude,
             frequency as f32,
-            &mut phase
+            &mut phase,
+            samples_per_unit,
         );
     }
 
@@ -62,20 +64,31 @@ fn write_sound(
     amplitude: f32,
     frequency: f32,
     phase: &mut f32,
+    duration: u32
 ) {
-    if !tone {
-        samples.extend(vec![0f32; samples_per_unit as usize]);
-        return;
-    }
+    let fade_samples = (0.005 * sample_rate as f32).min(samples_per_unit as f32 * 0.1) as u32;
+    let fade_samples = fade_samples.min(samples_per_unit / 2);
 
-    for t in 0..samples_per_unit {
-        let angle = 2f32 * std::f32::consts::PI * t as f32 * frequency / sample_rate as f32 + *phase;
+    for t in 0..duration {
+        let angle = 2.0 * PI * t as f32 * frequency / sample_rate as f32 + *phase;
         let v = amplitude * angle.sin();
-        samples.push(v);
+
+        let envelope = if tone {
+            if t < fade_samples {
+                (t as f32) / (fade_samples as f32)
+            } else if t >= duration - fade_samples {
+                ((duration - t) as f32) / (fade_samples as f32)
+            } else {
+                1.0
+            }
+        } else {
+            0.0
+        };
+
+        samples.push(v * envelope);
     }
 
-    // Update phase for the next call
-    *phase += 2f32 * std::f32::consts::PI * samples_per_unit as f32 * frequency / sample_rate as f32;
-    *phase %= 2f32 * std::f32::consts::PI; // Keep phase in [0, 2π]
+    *phase += 2.0 * PI * duration as f32 * frequency / sample_rate as f32;
+    *phase %= 2.0 * PI;
 }
 

@@ -29,13 +29,8 @@ impl SearchNode {
 
     fn next(&self, c: char) -> &Option<Box<SearchNode>> {
         match c {
-            c @ (morse::DIT | morse::DAH) => {
-                if c == morse::DIT {
-                    &self.dit_node
-                } else {
-                    &self.dah_node
-                }
-            }
+            morse::DIT => &self.dit_node,
+            morse::DAH => &self.dah_node,
             _ => &None,
         }
     }
