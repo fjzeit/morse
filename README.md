@@ -38,7 +38,7 @@ morse encode-sound "Hello World" --output hello.wav --wpm 20 --volume 80 --frequ
 Decode Morse code back to text:
 
 ```sh
-morse decode-text "... --- ..."
+morse decode-text -- "... --- ..."
 ```
 
 ## Supported Characters
