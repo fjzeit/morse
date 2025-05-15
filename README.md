@@ -27,10 +27,10 @@ morse encode-sound "Hello World" --output hello.wav --wpm 20 --volume 80 --frequ
 ```
 
 **Options for `encode-sound`:**
-- `--wpm`, `-w` (default: 30): Words per minute
-- `--volume`, `-v` (default: 50): Volume % (0-100)
-- `--frequency`, `-f` (default: 800): Signal frequency (Hz)
-- `--sample-rate`, `-s` (default: 48000): Sample rate (Hz)
+- `--wpm`, `-w` (default: 40): Words per minute (20-50)
+- `--volume`, `-v` (default: 80): Volume % (0-100)
+- `--frequency`, `-f` (default: 1200): Signal frequency (Hz)
+- `--sample-rate`, `-s` (default: 44100): Sample rate (Hz)
 - `--output`, `-o` (default: ./out.wav): Output WAV file path
 
 ### Decode Text
