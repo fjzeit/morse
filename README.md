@@ -41,25 +41,6 @@ Decode Morse code back to text:
 morse decode-text "... --- ..."
 ```
 
-## Library Usage
-
-Add to your `Cargo.toml`:
-
-```toml
-[dependencies]
-morse = { path = "." }
-```
-
-Example:
-
-```rust
-use morse::encoding::encode::to_morse;
-use morse::encoding::decode::to_text;
-
-let morse = to_morse("Hello").unwrap();
-let text = to_text(".... . .-.. .-.. --- ");
-```
-
 ## Supported Characters
 
 A-Z, 0-9, and common punctuation: `& ' @ ) ( : , = ! . - % + " ? /` and space.
