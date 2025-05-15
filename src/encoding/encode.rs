@@ -8,7 +8,7 @@ fn get_morse_index(c: char) -> Option<usize> {
         _ => morse::MORSE_TABLE
             .iter()
             .skip(36)
-            .position(|&(ch, _, _)| ch == c)
+            .position(|&(ch, _)| ch == c)
             .map(|pos| pos + 36),
     }
 }
@@ -17,7 +17,7 @@ fn morse_length(text: &str) -> usize {
     let mut length = str::len(text);
     for (_, b) in text.chars().enumerate() {
         if let Some(pos) = get_morse_index(b) {
-            length += morse::MORSE_TABLE[pos].2;
+            length += morse::MORSE_TABLE[pos].1.len();
         }
     }
 
@@ -46,12 +46,6 @@ mod tests {
     use super::*;
     use rstest::rstest;
 
-    #[rstest] // ensure the lengths in the tuple match the length of the string
-    fn test_table_item_lengths() {
-        for (_, c) in morse::MORSE_TABLE.iter().enumerate() {
-            assert_eq!(str::len(c.1), c.2);
-        }
-    }
     #[rstest] // ensure that get_morse_index returns correct index for a given character
     fn test_get_morse_index() {
         for (c, i) in morse::MORSE_TABLE.iter().enumerate() {
