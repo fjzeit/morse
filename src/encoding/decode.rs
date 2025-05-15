@@ -2,7 +2,7 @@ use super::morse;
 
 #[derive(Debug)]
 struct SearchNode {
-    value: char,
+    value: Option<char>,
     dit_node: Option<Box<SearchNode>>,
     dah_node: Option<Box<SearchNode>>,
 }
@@ -10,14 +10,14 @@ struct SearchNode {
 impl SearchNode {
     fn new() -> Self {
         SearchNode {
-            value: '?',
+            value: None,
             dit_node: None,
             dah_node: None,
         }
     }
 
     fn set_value(&mut self, value: char) {
-        self.value = value;
+        self.value = Some(value);
     }
     fn add_dit(&mut self) {
         self.dit_node = Some(Box::new(SearchNode::new()));
@@ -68,7 +68,11 @@ pub fn to_text(morse: &str) -> String {
 
     for (i, c) in morse.chars().enumerate() {
         if c == morse::MEDIUM_GAP || c == morse::SHORT_GAP {
-            result.push(node.value);
+            node.value.map(|v| result.push(v));
+        }
+
+        if c == morse::MEDIUM_GAP {
+            result.push(' ');
         }
 
         node = match c {
@@ -77,8 +81,8 @@ pub fn to_text(morse: &str) -> String {
             _ => &tree
         }
     }
-    
-    result.push(node.value);
+
+    node.value.map(|v| result.push(v));
 
     result
 }
